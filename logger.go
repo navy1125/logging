@@ -3,6 +3,8 @@ package logging
 import (
 	"fmt"
 	"io"
+	"path/filepath"
+	"runtime"
 	"time"
 )
 
@@ -75,6 +77,23 @@ func (l *Logger) ResetLogLevel(level string) {
 	}
 }
 
+//打印日志用，根据回退堆栈层级获取文件名和行号信息
+//参数：需要回退的堆栈层数
+func GetLogBtInfo(level int) string {
+	if level < 0 { //参数错误
+		return ""
+	}
+	format := ""
+	level += 1 //函数自身占一层
+	_, file, line, ok := runtime.Caller(level)
+	if ok == true {
+		file = filepath.Base(file)
+		prefix := fmt.Sprintf("[%s:%d] ", file, line)
+		format = prefix + format
+	}
+	return format
+}
+
 func AddHandler(name string, h Emitter) {
 	DefaultLogger.AddHandler(name, h)
 }
@@ -84,18 +103,22 @@ func Log(level logLevel, format string, values ...interface{}) {
 }
 
 func Debug(format string, values ...interface{}) {
+	format = GetLogBtInfo(1) + format //回退一层到原始栈
 	DefaultLogger.Log(DEBUG, format, values...)
 }
 
 func Info(format string, values ...interface{}) {
+	format = GetLogBtInfo(1) + format //回退一层到原始栈
 	DefaultLogger.Log(INFO, format, values...)
 }
 
 func Warning(format string, values ...interface{}) {
+	format = GetLogBtInfo(1) + format //回退一层到原始栈
 	DefaultLogger.Log(WARNING, format, values...)
 }
 
 func Error(format string, values ...interface{}) {
+	format = GetLogBtInfo(1) + format //回退一层到原始栈
 	DefaultLogger.Log(ERROR, format, values...)
 }
 
