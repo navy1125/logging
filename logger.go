@@ -103,22 +103,22 @@ func Log(level logLevel, format string, values ...interface{}) {
 }
 
 func Debug(format string, values ...interface{}) {
-	format = GetLogBtInfo(1) + format //回退一层到原始栈
+	//format = GetLogBtInfo(1) + format //回退一层到原始栈
 	DefaultLogger.Log(DEBUG, format, values...)
 }
 
 func Info(format string, values ...interface{}) {
-	format = GetLogBtInfo(1) + format //回退一层到原始栈
+	//format = GetLogBtInfo(1) + format //回退一层到原始栈
 	DefaultLogger.Log(INFO, format, values...)
 }
 
 func Warning(format string, values ...interface{}) {
-	format = GetLogBtInfo(1) + format //回退一层到原始栈
+	//format = GetLogBtInfo(1) + format //回退一层到原始栈
 	DefaultLogger.Log(WARNING, format, values...)
 }
 
 func Error(format string, values ...interface{}) {
-	format = GetLogBtInfo(1) + format //回退一层到原始栈
+	//format = GetLogBtInfo(1) + format //回退一层到原始栈
 	DefaultLogger.Log(ERROR, format, values...)
 }
 
