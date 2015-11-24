@@ -68,6 +68,11 @@ func (l *Logger) Warning(format string, values ...interface{}) {
 func (l *Logger) Error(format string, values ...interface{}) {
 	l.Log(ERROR, format, values...)
 }
+func (l *Logger) Output(calldepth int, s string) error {
+
+	l.Log(logLevel(calldepth), s)
+	return nil
+}
 
 func (l *Logger) ResetLogLevel(level string) {
 	for _, e := range l.Handlers {
