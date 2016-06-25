@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	DefaultTimeLayout = "2006-01-02 15:04:05"
+	DefaultTimeLayout = "060102-15:04:05"
 )
 
 var (
@@ -17,7 +17,7 @@ var (
 )
 
 var DefaultFormat = func(name, timeString string, rd *Record) string {
-	return "[" + timeString + "] " + rd.Level.String() + " " + rd.Message + "\n"
+	return timeString + " " + name + " " + rd.Level.String() + " " + rd.Message + "\n"
 }
 
 type Handler struct {
@@ -72,7 +72,8 @@ func (h *Handler) SetLevelRangeString(smin, smax string) {
 }
 
 func (h *Handler) SetTimeLayout(layout string) {
-	h.layout = layout
+	//WHJ 暂时屏蔽,统一所有日志格式
+	//h.layout = layout
 }
 
 func (h *Handler) SetFormat(format func(string, string, *Record) string) {
