@@ -7,10 +7,12 @@ import (
 type logLevel uint8
 
 const (
-	DEBUG   logLevel = 1
+	DEBUG   logLevel = 0
+	TRACE   logLevel = 1
 	INFO    logLevel = 2
 	WARNING logLevel = 3
 	ERROR   logLevel = 4
+	FATAL   logLevel = 5
 	DISABLE logLevel = 255
 )
 
@@ -18,12 +20,16 @@ func StringToLogLevel(s string) logLevel {
 	switch strings.ToUpper(s) {
 	case "DEBUG":
 		return DEBUG
+	case "TRACE":
+		return TRACE
 	case "INFO":
 		return INFO
 	case "WARN", "WARNING":
 		return WARNING
 	case "ERROR":
 		return ERROR
+	case "FATAL":
+		return FATAL
 	default:
 		return DISABLE
 	}
