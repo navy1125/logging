@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"runtime"
 	"time"
+
+	"git.code4.in/mobilegameserver/unibase/unitime"
 )
 
 type Record struct {
@@ -18,9 +20,11 @@ type Emitter interface {
 	Emit(string, *Record)
 }
 
+type LogServer func(id uint64, name, classname, servername string, level, timestamp uint32, log string)
 type Logger struct {
-	Name     string
-	Handlers map[string]Emitter
+	Name      string
+	Handlers  map[string]Emitter
+	LogServer LogServer
 }
 
 func NewLogger() *Logger {
@@ -29,6 +33,9 @@ func NewLogger() *Logger {
 
 var DefaultLogger = NewLogger()
 
+func (l *Logger) AddLoggerServerFunc(fun LogServer) {
+	l.LogServer = fun
+}
 func (l *Logger) AddHandler(name string, h Emitter) {
 	oldHandler, ok := l.Handlers[name]
 	if ok {
@@ -45,13 +52,17 @@ func (l *Logger) AddHandler(name string, h Emitter) {
 }
 
 func (l *Logger) Log(level logLevel, format string, values ...interface{}) {
+	type LogServer func(id uint64, name, classname, servername string, level, timestamp uint32, log string)
 	rd := &Record{
-		Time:    time.Now(),
+		Time:    unitime.Time.Now(),
 		Level:   level,
 		Message: fmt.Sprintf(format, values...),
 	}
 	for _, h := range l.Handlers {
 		h.Emit(l.Name, rd)
+	}
+	if l.LogServer != nil {
+		l.LogServer(0, "", "", "", uint32(level), uint32(unitime.Time.Sec()), rd.Message)
 	}
 }
 
@@ -103,6 +114,9 @@ func GetLogBtInfo(level int) string {
 
 func AddHandler(name string, h Emitter) {
 	DefaultLogger.AddHandler(name, h)
+}
+func AddLoggerServerFunc(fun LogServer) {
+	DefaultLogger.LogServer = fun
 }
 
 func Log(level logLevel, format string, values ...interface{}) {
