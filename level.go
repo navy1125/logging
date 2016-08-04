@@ -35,6 +35,44 @@ func StringToLogLevel(s string) logLevel {
 	}
 }
 
+func GetLogLevelInt(s string) int {
+	switch strings.ToUpper(s) {
+	case "DEBUG":
+		return int(DEBUG)
+	case "TRACE":
+		return int(TRACE)
+	case "INFO":
+		return int(INFO)
+	case "WARN", "WARNING":
+		return int(WARNING)
+	case "ERROR":
+		return int(ERROR)
+	case "FATAL":
+		return int(FATAL)
+	default:
+		return int(DISABLE)
+	}
+}
+
+func GetLogLevelStr(level int) string {
+	switch level {
+	case int(DEBUG):
+		return "DEBUG"
+	case int(TRACE):
+		return "TRACE"
+	case int(INFO):
+		return "INFO"
+	case int(WARNING):
+		return "WARNING"
+	case int(ERROR):
+		return "ERROR"
+	case int(FATAL):
+		return "FATAL"
+	default:
+		return ""
+	}
+}
+
 func (level *logLevel) String() string {
 	switch *level {
 	case DEBUG:

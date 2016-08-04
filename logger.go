@@ -53,7 +53,6 @@ func (l *Logger) AddHandler(name string, h Emitter) {
 }
 
 func (l *Logger) Log(level logLevel, format string, values ...interface{}) {
-	type LogServer func(id uint64, name, classname, servername string, level, timestamp uint32, log string)
 	rd := &Record{
 		Time:    unitime.Time.Now(),
 		Level:   level,
