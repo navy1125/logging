@@ -22,20 +22,27 @@ type Emitter interface {
 
 type LogServer func(id uint64, name, classname, servername string, level, timestamp uint32, log string)
 type Logger struct {
-	Name       string
-	Handlers   map[string]Emitter
-	LogServer  LogServer
-	log2server bool
+	Name           string
+	Handlers       map[string]Emitter
+	LogServer      LogServer
+	logServerLevel logLevel
+	log2server     bool
 }
 
 func NewLogger() *Logger {
-	return &Logger{Handlers: make(map[string]Emitter)}
+	return &Logger{
+		Handlers:       make(map[string]Emitter),
+		logServerLevel: ERROR,
+	}
 }
 
 var DefaultLogger = NewLogger()
 
 func (l *Logger) AddLoggerServerFunc(fun LogServer) {
 	l.LogServer = fun
+}
+func (l *Logger) SetLogServerLevel(level logLevel) {
+	l.logServerLevel = level
 }
 func (l *Logger) AddHandler(name string, h Emitter) {
 	oldHandler, ok := l.Handlers[name]
@@ -61,7 +68,7 @@ func (l *Logger) Log(level logLevel, format string, values ...interface{}) {
 	for _, h := range l.Handlers {
 		h.Emit(l.Name, rd)
 	}
-	if l.LogServer != nil && l.log2server == false {
+	if l.LogServer != nil && l.log2server == false && l.logServerLevel >= level {
 		l.log2server = true
 		l.LogServer(0, "", "", "", uint32(level), uint32(unitime.Time.Sec()), rd.Message)
 		l.log2server = false
