@@ -87,7 +87,8 @@ func (l *Logger) Log(level logLevel, format string, values ...interface{}) {
 		Level:   level,
 		Message: fmt.Sprintf(format, values...),
 	}
-	l.ChanLogRecord <- rd
+	//l.ChanLogRecord <- rd
+	l.LogWrite(rd)
 	if l.LogServer != nil && l.log2server == false && l.logServerLevel >= level {
 		l.log2server = true
 		l.LogServer(0, "", "", "", uint32(level), uint32(unitime.Time.Sec()), rd.Message)
