@@ -30,6 +30,7 @@ type Logger struct {
 	LogServer      LogServer
 	logServerLevel logLevel
 	log2server     bool
+	final          bool
 	ChanLogRecord  chan *Record
 }
 
@@ -47,6 +48,7 @@ func NewLogger() *Logger {
 				break
 			}
 		}
+		ret.final = true
 	}()
 	return ret
 }
@@ -98,6 +100,13 @@ func (l *Logger) Log(level logLevel, format string, values ...interface{}) {
 
 func (l *Logger) Debug(format string, values ...interface{}) {
 	l.Log(DEBUG, format, values...)
+}
+
+func (l *Logger) Final() {
+	close(l.ChanLogRecord)
+	for l.final == false {
+		time.Sleep(time.Millisecond)
+	}
 }
 
 func (l *Logger) Info(format string, values ...interface{}) {
@@ -175,4 +184,7 @@ func Error(format string, values ...interface{}) {
 
 func ResetLogLevel(level string) {
 	DefaultLogger.ResetLogLevel(level)
+}
+func Final() {
+	DefaultLogger.Final()
 }
