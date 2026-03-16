@@ -7,7 +7,7 @@ import (
 	"runtime"
 	"time"
 
-	"git.code4.in/mobilegameserver/unibase/unitime"
+	"github.com/navy1125/unibase/unitime"
 )
 
 type Record struct {
